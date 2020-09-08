@@ -1,0 +1,14 @@
+#!/usr/bin/python
+
+from src import core
+
+
+if __name__ == '__main__':
+	import argparse
+
+	parser = argparse.ArgumentParser(description='Twitter account scraper and tweet displayer')
+	parser.add_argument('account', type=str, help='twitter handle to scrape')
+	args = parser.parse_args()
+
+	jayson = core.getJsonDataFromUser(args.account)
+	print jayson['items_html']
