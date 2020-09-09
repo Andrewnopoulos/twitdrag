@@ -45,7 +45,4 @@ def parseHtml(htmlinput):
 		if timestamp:
 			tweetDict[tweetData['data-item-id']]['timestamp'] = timestamp['data-time']
 
-	for tweet in tweetDict:
-		# print (tweet)
-		print (tweetDict[tweet]['text'])
-		print ("__________________________________________________________")
+	return tweetDict

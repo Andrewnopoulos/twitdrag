@@ -12,5 +12,12 @@ if __name__ == '__main__':
 
 	jayson = core.getJsonDataFromUser(args.account)
 	# print (jayson)
-	core.parseHtml(jayson['items_html'])
+	tweets = core.parseHtml(jayson['items_html'])
+
+	if len(tweets) is 0:
+		print("no tweets found for account", args.account)
+
+	for tweet in tweets:
+		print (tweets[tweet]['text'])
+		print ("__________________________________________________________")
 	# print (jayson['items_html'])
