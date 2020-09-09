@@ -5,13 +5,16 @@ import ssl
 import json
 
 
-def getJsonDataFromUser(userAccount):
+def getJsonDataFromUser(userAccount, max_position=None):
 	fromItem = '(from:{})'.format(userAccount)
 
 	params = {
 		'f': 'tweets',
 		'q': fromItem
 	}
+
+	if max_position:
+		params['max_position'] = max_position
 
 	url_tuple = ('https', 'twitter.com', '/i/search/timeline', '', urlencode(params), '')
 	url = urlunparse(url_tuple)
@@ -24,7 +27,7 @@ def getJsonDataFromUser(userAccount):
 	return json.loads(response.read())
 
 
-def parseHtml(htmlinput):
+def getTweetsFromHtml(htmlinput):
 	tweetDict = {}
 
 	soup = BeautifulSoup(htmlinput, "html.parser")
