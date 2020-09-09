@@ -11,4 +11,6 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 
 	jayson = core.getJsonDataFromUser(args.account)
-	print jayson['items_html']
+	# print (jayson)
+	core.parseHtml(jayson['items_html'])
+	# print (jayson['items_html'])
