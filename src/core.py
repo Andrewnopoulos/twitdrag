@@ -117,40 +117,33 @@ class TweetDragger:
 			lastItem = list(self.tweets)[-1]
 
 		jsonResponse = getJsonDataFromUser(self.username)
-		allNewTweets = None
+		tweets = None
+
+		allNewTweets = {}
 
 		if jsonResponse:
-			allNewTweets = getTweetsFromHtml(jsonResponse['items_html'])
-
-		min_tweet = None
+			tweets = getTweetsFromHtml(jsonResponse['items_html'])
+			for tweet in tweets:
+				allNewTweets[tweet] = tweets[tweet]
 
 		while True:
-			if allNewTweets is None or len(allNewTweets) == 0 or lastItem in allNewTweets:
+			if len(tweets) == 0 or lastItem in tweets:
 				break
 
-			if min_tweet is None:
-				min_tweet = list(allNewTweets)[0]
+			min_tweet = list(tweets)[0]
+			max_tweet = list(tweets)[-1]
 
-			max_tweet = list(allNewTweets)[-1]
-
-			if min_tweet is not max_tweet:
-				if 'min_position' in jsonResponse:
-					max_position = jsonResponse['min_position']
-				else:
-					max_position = "TWEET-%s-%s" % (max_tweet, min_tweet)
-
-				rawJson = getJsonDataFromUser(self.username, max_position)
-				nextTweetBatch = None
-				if rawJson:
-					nextTweetBatch = getTweetsFromHtml(rawJson['items_html'])
-
-				if nextTweetBatch is None:
-					break
-
-				allNewTweets.update(nextTweetBatch)
-
+			if 'min_position' in jsonResponse:
+				max_position = jsonResponse['min_position']
 			else:
-				break
+				max_position = "TWEET-%s-%s" % (max_tweet, min_tweet)
+
+			jsonResponse = getJsonDataFromUser(self.username, max_position)
+
+			tweets = getTweetsFromHtml(jsonResponse['items_html'])
+
+			for tweet in tweets:
+				allNewTweets[tweet] = tweets[tweet]
 
 		self.tweets.update(allNewTweets)
 		self.tweets = OrderedDict(sorted(self.tweets.items(), key=lambda t: t[0]))
