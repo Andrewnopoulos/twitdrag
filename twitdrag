@@ -3,6 +3,8 @@
 import time
 from src.core import TweetDragger
 
+SLEEP_DURATION = 10 * 60
+
 if __name__ == '__main__':
 	import argparse
 
@@ -15,18 +17,17 @@ if __name__ == '__main__':
 	dragger = TweetDragger(username)
 	dragger.populate()
 
-	# store the most recent tweet so we know where to pick up from
-	latestTweet = list(dragger.tweets)[-1]
-
 	dragger.printRecentTweets(5) # print 5 most recent tweets
 	print()
 
-	sec = input('input something to continue execution\n')
+	while True:
+		print('\tChecking for new tweets in 10 minutes\n')
 
-	# time.sleep(int(sec))
+		# store the most recent tweet so we know where to pick up from
+		latestTweet = list(dragger.tweets)[-1]
 
-	print('Continuing execution')
+		time.sleep(int(SLEEP_DURATION))
 
-	dragger.update()
+		dragger.update()
 
-	dragger.printNewTweetsSince(latestTweet)
+		dragger.printNewTweetsSince(latestTweet)

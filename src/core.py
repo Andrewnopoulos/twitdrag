@@ -68,8 +68,9 @@ class TweetDragger:
 
 	def _printTweetList(self, tweetList):
 		for tweet in tweetList:
-			print ("  ~~~~~~~~~~~~~~~")
+			print()
 			print (self.tweets[tweet]['text'])
+		print()
 
 	def printRecentTweets(self, numberToPrint=None):
 		if numberToPrint is not None and numberToPrint < len(self.tweets):
@@ -82,14 +83,16 @@ class TweetDragger:
 
 	def printNewTweetsSince(self, lastTweetId):
 		if lastTweetId is None or lastTweetId not in self.tweets:
-			print("Warning: tweet not found in database")
+			print("\tWarning: tweet not found in database")
+			print()
 			return
 
 		tweetList = list(self.tweets)
 		recentIndex = tweetList.index(lastTweetId)
 
 		if recentIndex+1 >= len(tweetList):
-			print("no new tweets")
+			print("\tno new tweets")
+			print()
 			return
 
 		tweetsToPrint = tweetList[recentIndex+1:]
