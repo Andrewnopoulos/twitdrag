@@ -72,6 +72,12 @@ class TweetDragger:
 			print (self.tweets[tweet]['text'])
 		print()
 
+	def getLatestTweet(self):
+		if self.tweets is not None and len(self.tweets) > 0:
+			return list(self.tweets)[-1]
+
+		return None
+
 	def printRecentTweets(self, numberToPrint=None):
 		if numberToPrint is not None and numberToPrint < len(self.tweets):
 			tweetsToPrint = list(self.tweets)[-1 * numberToPrint:]
@@ -82,10 +88,11 @@ class TweetDragger:
 
 
 	def printNewTweetsSince(self, lastTweetId):
-		if lastTweetId is None or lastTweetId not in self.tweets:
-			print("\tWarning: tweet not found in database")
-			print()
+		if len(self.tweets) == 0:
 			return
+
+		if lastTweetId is None or lastTweetId not in self.tweets:
+			self._printTweetList(self.tweets)
 
 		tweetList = list(self.tweets)
 		recentIndex = tweetList.index(lastTweetId)
@@ -105,6 +112,7 @@ class TweetDragger:
 		self.tweets = OrderedDict(sorted(tweetList.items(), key=lambda t: t[0]))
 
 	def update(self):
+		lastItem = None
 		if len(self.tweets) is not 0:
 			lastItem = list(self.tweets)[-1]
 
@@ -117,7 +125,7 @@ class TweetDragger:
 		min_tweet = None
 
 		while True:
-			if allNewTweets is None or lastItem in allNewTweets:
+			if allNewTweets is None or len(allNewTweets) == 0 or lastItem in allNewTweets:
 				break
 
 			if min_tweet is None:

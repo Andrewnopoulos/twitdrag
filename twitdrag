@@ -2,6 +2,7 @@
 
 import time
 from src.core import TweetDragger
+import json
 
 SLEEP_DURATION = 10 * 60
 
@@ -10,9 +11,20 @@ if __name__ == '__main__':
 
 	parser = argparse.ArgumentParser(description='Twitter account scraper and tweet displayer')
 	parser.add_argument('account', type=str, help='twitter handle to scrape')
+	parser.add_argument('--dump', action='store_true', help='print out a json dump of all collected tweets for the specified user')
 	args = parser.parse_args()
 
 	username = args.account
+	dumpjson = args.dump
+
+	if dumpjson:
+		try:
+			with open('{}.json'.format(username), 'r') as fp:
+				jsonData = json.load(fp)
+				print(json.dumps(jsonData, indent=4))
+		except FileNotFoundError:
+			print("No tweets stored for {}".format(username))
+		quit()
 
 	dragger = TweetDragger(username)
 	dragger.populate()
@@ -21,10 +33,13 @@ if __name__ == '__main__':
 	print()
 
 	while True:
+		with open('{}.json'.format(username), 'w') as fp:
+			json.dump(dragger.tweets, fp, indent=4)
+
 		print('\tChecking for new tweets in 10 minutes\n')
 
 		# store the most recent tweet so we know where to pick up from
-		latestTweet = list(dragger.tweets)[-1]
+		latestTweet = dragger.getLatestTweet()
 
 		time.sleep(int(SLEEP_DURATION))
 
