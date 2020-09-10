@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-from src import core
-
+import time
+from src.core import TweetDragger
 
 if __name__ == '__main__':
 	import argparse
@@ -12,25 +12,21 @@ if __name__ == '__main__':
 
 	username = args.account
 
-	jayson = core.getJsonDataFromUser(username)
-	tweets = core.getTweetsFromHtml(jayson['items_html'])
+	dragger = TweetDragger(username)
+	dragger.populate()
 
-	min_tweet = list(tweets)[0]
-	max_tweet = list(tweets)[-1]
+	# store the most recent tweet so we know where to pick up from
+	latestTweet = list(dragger.tweets)[-1]
 
-	for i in range(3):
-		min_tweet = list(tweets)[0]
-		max_tweet = list(tweets)[-1]
+	dragger.printRecentTweets(5) # print 5 most recent tweets
+	print()
 
-		if 'min_position' in jayson:
-			max_position = jayson['min_position']
-		else:
-			max_position = "TWEET-%s-%s" % (max_tweet, min_tweet)
+	sec = input('input something to continue execution\n')
 
-		jayson = core.getJsonDataFromUser(username, max_position)
+	# time.sleep(int(sec))
 
-		tweets = core.getTweetsFromHtml(jayson['items_html'])
+	print('Continuing execution')
 
-		for tweet in tweets:
-			print (tweets[tweet]['text'])
-			print ("             ~~~~~~~~~~~~~~~")
+	dragger.update()
+
+	dragger.printNewTweetsSince(latestTweet)
